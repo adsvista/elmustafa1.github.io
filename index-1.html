@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>elmustafa – مولّد ملفات PDF</title>
+<meta name="theme-color" content="#14213d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="elmustafa">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#14213d;--mut:#6b7280;--gold:#c9a24b;--line:#e5e1d6;--field:#faf8f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141f;--card:#1a2033;--ink:#f1ede2;--mut:#9aa3b5;--line:#2c3550;--field:#141a2b}}
+:root[data-theme="dark"]{--bg:#10141f;--card:#1a2033;--ink:#f1ede2;--mut:#9aa3b5;--line:#2c3550;--field:#141a2b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',Tahoma,Arial,sans-serif;padding:16px}
+h1{font-size:20px;margin:4px 0 2px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;max-width:720px;margin:0 auto 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:3px}
+input,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);font:inherit;font-size:15px}
+input[dir=ltr]{text-align:left}
+.full{grid-column:1/-1}
+.btns{display:flex;gap:10px;max-width:720px;margin:0 auto 14px}
+button{flex:1;padding:13px;border:0;border-radius:12px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#dl{background:var(--gold);color:#14213d}
+#clr{background:var(--card);color:var(--ink);border:1px solid var(--line);flex:0 0 90px}
+#msg{text-align:center;font-size:13px;color:var(--mut);min-height:20px;margin-bottom:8px}
+.pv{max-width:720px;margin:0 auto;overflow:hidden;border-radius:10px;border:1px solid var(--line)}
+#wrap{transform-origin:top right;width:794px}
+
+/* ===== A4 sheet ===== */
+.sheet{width:794px;height:1122px;background:#fff;color:#14213d;font-family:'Cairo',Tahoma,Arial,sans-serif;position:relative;direction:rtl;overflow:hidden}
+.sheet .hd{background:#14213d;color:#fff;padding:40px 48px 34px;position:relative}
+.sheet .hd:after{content:"";position:absolute;right:0;left:0;bottom:0;height:6px;background:#c9a24b}
+.sheet .brand{font-family:Arial,sans-serif;font-size:36px;font-weight:700;letter-spacing:6px;direction:ltr;text-align:right}
+.sheet .brand span{color:#c9a24b}
+.sheet .tag{font-size:13px;color:#cbd3e6;margin-top:4px}
+.sheet .ttl{position:absolute;left:48px;top:44px;text-align:left;font-size:15px;color:#c9a24b;font-weight:700}
+.sheet .ttl small{display:block;color:#cbd3e6;font-weight:400;font-size:12px;margin-top:3px}
+.sheet .bd{padding:34px 48px}
+.sheet .cl{border-right:5px solid #c9a24b;padding:6px 16px;background:#faf6ea;border-radius:4px;margin-bottom:26px}
+.sheet .cl small{display:block;color:#6b7280;font-size:12px}
+.sheet .cl b{font-size:22px}
+.sheet h3{font-size:15px;color:#14213d;margin:22px 0 8px;padding-bottom:6px;border-bottom:2px solid #c9a24b;display:inline-block}
+.sheet table{width:100%;border-collapse:collapse;font-size:14px}
+.sheet td{padding:10px 12px;border-bottom:1px solid #ece7d8;vertical-align:top}
+.sheet td.k{width:34%;color:#6b7280;background:#faf8f3;font-weight:600}
+.sheet td.v{font-weight:600;word-break:break-word}
+.sheet td.v.ltr{direction:ltr;text-align:right;font-family:Arial,sans-serif}
+.sheet .note{margin-top:20px;padding:12px 14px;border:1px dashed #c9a24b;border-radius:8px;font-size:13px;line-height:1.8;white-space:pre-wrap}
+.sheet .ft{position:absolute;bottom:0;right:0;left:0;background:#14213d;color:#fff;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;border-top:5px solid #c9a24b}
+.sheet .ft .nm{font-family:Arial,sans-serif;letter-spacing:3px;font-weight:700}
+.sheet .ft .ph{direction:ltr;font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#c9a24b}
+.sheet .ft .ph small{color:#cbd3e6;font-weight:400;font-size:12px;margin-left:8px;font-family:'Cairo',sans-serif}
+
+/* ===== splash ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 50% 42%,#1d2d55 0%,#0d1428 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;direction:ltr;transition:opacity .7s ease,visibility .7s}
+#splash.out{opacity:0;visibility:hidden}
+.sp-word{display:flex;font-family:'Cinzel','Times New Roman',serif;font-weight:700;font-size:clamp(28px,9.5vw,64px);letter-spacing:.1em;color:#fff;margin-right:-.1em}
+.sp-word span{display:inline-block;opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(2.4);filter:blur(14px);animation:asm 1.15s cubic-bezier(.17,.84,.3,1) forwards;animation-delay:calc(var(--i)*.09s + .25s);transition:color .9s ease calc(var(--i)*.07s)}
+.sp-word.gold span{color:#e6c677}
+@keyframes asm{to{opacity:1;transform:none;filter:blur(0)}}
+.sp-line{height:2px;width:0;margin-top:20px;background:linear-gradient(90deg,transparent,#c9a24b,transparent);animation:ln .9s ease 1.7s forwards}
+@keyframes ln{to{width:min(72vw,380px)}}
+.sp-tag{margin-top:14px;font-family:'Cinzel',serif;font-size:clamp(10px,2.8vw,13px);letter-spacing:.42em;color:#cbd3e6;opacity:0;animation:fi .8s ease 2.1s forwards}
+@keyframes fi{to{opacity:.9}}
+@media (prefers-reduced-motion:reduce){.sp-word span{animation:none;opacity:1;transform:none;filter:none}.sp-line{animation:none;width:min(72vw,380px)}.sp-tag{animation:none;opacity:.9}}
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true"><div class="sp-word" id="spWord"></div><div class="sp-line"></div><div class="sp-tag">DIGITAL ADVERTISING</div></div>
+
+<div dir="rtl">
+<h1>مولّد ملفات PDF – elmustafa</h1>
+<p class="sub">اكتب البيانات، شوف المعاينة، ونزّل ملف PDF. مفيش أي حاجة بتتحفظ.</p>
+
+<div class="card"><div class="grid">
+  <div class="full"><label>اسم العميل</label><input id="client" placeholder="مثال: شركة النور"></div>
+  <div><label>الدومين</label><input id="domain" dir="ltr" placeholder="example.com"></div>
+  <div><label>رابط الموقع</label><input id="url" dir="ltr" placeholder="https://example.com"></div>
+  <div><label>مزوّد الدومين (Registrar)</label><input id="registrar" placeholder="GoDaddy / Namecheap"></div>
+  <div><label>تاريخ انتهاء الدومين</label><input id="dexp" type="date"></div>
+  <div><label>الاستضافة</label><input id="host" placeholder="اسم شركة الاستضافة"></div>
+  <div><label>تاريخ انتهاء الاستضافة</label><input id="hexp" type="date"></div>
+  <div><label>رابط لوحة التحكم</label><input id="panel" dir="ltr" placeholder="https://..."></div>
+  <div><label>اسم المستخدم</label><input id="user" dir="ltr"></div>
+  <div><label>كلمة المرور</label><input id="pass" dir="ltr"></div>
+  <div><label>رابط دخول الووردبريس</label><input id="wpurl" dir="ltr" placeholder="https://example.com/wp-admin"></div>
+  <div><label>اسم مستخدم الووردبريس</label><input id="wpuser" dir="ltr"></div>
+  <div><label>كلمة مرور الووردبريس</label><input id="wppass" dir="ltr"></div>
+  <div><label>IP السيرفر</label><input id="ip" dir="ltr"></div>
+  <div><label>نوع الموقع / المنصة</label><input id="cms" placeholder="WordPress / HTML ..."></div>
+  <div class="full"><label>ملاحظات</label><textarea id="notes" rows="3"></textarea></div>
+</div></div>
+
+<div class="btns"><button id="dl">تنزيل PDF</button><button id="clr">مسح</button></div>
+<div id="msg"></div>
+
+<div class="pv" id="pv"><div id="wrap"><div class="sheet" id="sheet"></div></div></div>
+</div>
+
+<script>
+const PHONE="01288106542";
+const $=id=>document.getElementById(id);
+const ids=["client","domain","url","registrar","dexp","host","hexp","panel","user","pass","wpurl","wpuser","wppass","ip","cms","notes"];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate=v=>{if(!v)return"";const d=new Date(v+"T00:00:00");return isNaN(d)?v:d.toLocaleDateString("en-GB")};
+
+function build(){
+  const g=k=>$(k).value.trim();
+  const row=(k,v,ltr)=>v?`<tr><td class="k">${k}</td><td class="v${ltr?" ltr":""}">${esc(v)}</td></tr>`:"";
+  const sec=(t,rows)=>rows.join("")?`<h3>${t}</h3><table>${rows.join("")}</table>`:"";
+  const today=new Date().toLocaleDateString("en-GB");
+  const html=`
+  <div class="hd"><div class="brand">EL<span>MUSTAFA</span></div><div class="tag">حلول الإعلانات الرقمية</div>
+    <div class="ttl">بيانات الموقع والدومين<small>${today}</small></div></div>
+  <div class="bd">
+    ${g("client")?`<div class="cl"><small>العميل</small><b>${esc(g("client"))}</b></div>`:""}
+    ${sec("بيانات الدومين",[row("الدومين",g("domain"),1),row("مزوّد الدومين",g("registrar")),row("تاريخ الانتهاء",fmtDate(g("dexp")),1)])}
+    ${sec("بيانات الموقع والاستضافة",[row("رابط الموقع",g("url"),1),row("نوع الموقع",g("cms")),row("الاستضافة",g("host")),row("انتهاء الاستضافة",fmtDate(g("hexp")),1),row("IP السيرفر",g("ip"),1)])}
+    ${sec("بيانات الدخول",[row("لوحة التحكم",g("panel"),1),row("اسم المستخدم",g("user"),1),row("كلمة المرور",g("pass"),1)])}
+    ${sec("بيانات الووردبريس",[row("رابط الدخول",g("wpurl"),1),row("اسم المستخدم",g("wpuser"),1),row("كلمة المرور",g("wppass"),1)])}
+    ${g("notes")?`<h3>ملاحظات</h3><div class="note">${esc(g("notes"))}</div>`:""}
+  </div>
+  <div class="ft"><div class="nm">ELMUSTAFA</div><div class="ph"><small>للتواصل</small>${PHONE}</div></div>`;
+  return html;
+}
+
+function scalePreview(){
+  const w=$("pv").clientWidth, s=Math.min(1,w/794);
+  $("wrap").style.transform=`scale(${s})`;
+  $("pv").style.height=(1122*s)+"px";
+}
+function render(){$("sheet").innerHTML=build();scalePreview()}
+ids.forEach(k=>$(k).addEventListener("input",render));
+window.addEventListener("resize",scalePreview);
+$("clr").onclick=()=>{ids.forEach(k=>$(k).value="");render();$("msg").textContent=""};
+
+$("dl").onclick=async()=>{
+  const msg=$("msg"),btn=$("dl");
+  btn.disabled=true;msg.textContent="جاري تجهيز الملف...";
+  let box;
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    box=document.createElement("div");
+    box.style.cssText="position:fixed;left:-10000px;top:0;width:794px";
+    box.innerHTML=`<div class="sheet">${build()}</div>`;
+    document.body.appendChild(box);
+    const blob=await html2pdf().set({
+      margin:0,image:{type:"jpeg",quality:0.98},
+      html2canvas:{scale:2,useCORS:true,scrollX:0,scrollY:0,x:0,y:0,width:794,height:1122,windowWidth:794},
+      jsPDF:{unit:"px",format:[794,1122],orientation:"portrait",hotfixes:["px_scaling"]}
+    }).from(box.firstChild).outputPdf("blob");
+    const name="elmustafa-"+(($("domain").value.trim()||"report").replace(/[^\w.-]/g,"_"))+".pdf";
+    const dls=(typeof claude!=="undefined"&&claude.use)?await claude.use("downloads").catch(()=>null):null;
+    if(dls){await dls.save({filename:name,data:blob});}
+    else{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+    msg.textContent="تم ✔";
+  }catch(e){
+    msg.textContent=(e&&e.code==="declined")?"تم الإلغاء":"حصلت مشكلة، جرّب تاني";
+  }finally{if(box)box.remove();btn.disabled=false}
+};
+render();
+
+/* splash */
+(function(){
+  const w=document.getElementById("spWord"),sp=document.getElementById("splash");
+  "ELMUSTAFA".split("").forEach((ch,i)=>{
+    const s=document.createElement("span");s.textContent=ch;
+    const a=(i*137)%360*Math.PI/180;
+    s.style.setProperty("--i",i);
+    s.style.setProperty("--x",Math.round(Math.cos(a)*140)+"px");
+    s.style.setProperty("--y",Math.round(Math.sin(a)*140)+"px");
+    s.style.setProperty("--r",((i%2?1:-1)*(25+i*9))+"deg");
+    w.appendChild(s);
+  });
+  const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  setTimeout(()=>w.classList.add("gold"),rm?0:2100);
+  setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),800)},rm?700:3300);
+})();
+if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
